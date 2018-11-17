@@ -11,6 +11,7 @@ bot = telebot.AsyncTeleBot(config.token)
 
 
 async def handle(request):
+    print(request)
     data = await request.json()
     print(data)
 
@@ -31,8 +32,7 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     DBManager().set_settings(config.db)
     app = web.Application()
-    app.add_routes([web.post('/wialon/bot/index', handle)])
-    app.add_routes([web.get('/wialon/bot/index', handle)])
+    app.add_routes([web.get('/index', handle), web.post('/index', handle)])
     app.on_shutdown.append(DBManager().on_shutdown)
 
     try:
