@@ -20,5 +20,5 @@ class Client(Base, BaseModel):
         return await DBManager().query_execute(ins)
 
     @staticmethod
-    async def create_user(user_id):
-        return await Client.add_user(user_id=user_id)
+    async def create_client(user_id):
+        return await Client.add_client(user_id=user_id)

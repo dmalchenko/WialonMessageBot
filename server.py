@@ -21,7 +21,7 @@ async def handle(request):
 
     client = await Client.select_by_user_id(user_id)
     if client is None:
-        await Client.create_user(user_id)
+        await Client.create_client(user_id)
 
     client_url = config.callback_url % hashlib.md5(user_id).hexdigest()
     bot.send_message(user_id, client_url)
@@ -31,7 +31,8 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     DBManager().set_settings(config.db)
     app = web.Application()
-    app.add_routes([web.post('/index', handle)])
+    app.add_routes([web.post('/wialon/bot/index', handle)])
+    app.add_routes([web.get('/wialon/bot/index', handle)])
     app.on_shutdown.append(DBManager().on_shutdown)
 
     try:
