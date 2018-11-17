@@ -18,7 +18,7 @@ async def create_table_client():
             id serial PRIMARY KEY,
             user_id bigint,
             hash varchar(32),
-            cnt integer,
+            cnt integer
         )
     '''
     return await DBManager().query_execute(query)
@@ -39,7 +39,7 @@ async def create_table_message():
             CREATE TABLE message (
             id serial PRIMARY KEY,
             user_id bigint,
-            title varchar(4096),
+            title varchar(4096)
         )
     '''
     return await DBManager().query_execute(query)
