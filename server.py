@@ -37,8 +37,10 @@ async def handle_bot(request):
 async def handle_wialon(request):
     hash = request.rel_url.query['hash']
     client = Client.select_by_hash(hash)
-    print(client)
-    return web.Response(status=200, text='WLN!!!')
+    if client is None:
+        return web.Response(status=404, text='Client with this hash not found')
+    print(client['user_id'])
+    return web.Response(status=200, text='Client found')
 
 
 if __name__ == '__main__':
