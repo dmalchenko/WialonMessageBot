@@ -10,8 +10,7 @@ from aiohttp import web
 bot = telebot.AsyncTeleBot(config.token)
 
 
-async def handle(request):
-    print(request)
+async def handle_bot(request):
     data = await request.json()
     print(data)
 
@@ -28,11 +27,19 @@ async def handle(request):
     bot.send_message(user_id, client_url)
     return web.Response(status=200)
 
+
+async def handle_wialon(request):
+    return web.Response(status=200, text='WLN!!!')
+
+
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     DBManager().set_settings(config.db)
     app = web.Application()
-    app.add_routes([web.get('/index', handle), web.post('/index', handle)])
+    app.add_routes([
+        web.get('/index', handle_wialon),
+        web.post('/index', handle_bot)
+    ])
     app.on_shutdown.append(DBManager().on_shutdown)
 
     try:
