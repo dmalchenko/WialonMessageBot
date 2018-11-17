@@ -10,6 +10,11 @@ from aiohttp import web
 bot = telebot.AsyncTeleBot(config.token)
 
 
+def get_user_hash(user_id):
+    user_id = user_id + 4579
+    return hashlib.md5(user_id.to_bytes(4, 'big')).hexdigest()
+
+
 async def handle_bot(request):
     data = await request.json()
     print(data)
@@ -18,9 +23,7 @@ async def handle_bot(request):
         return web.Response(status=200)
 
     user_id = int(data['message']['chat']['id'])
-    hash =  hashlib.md5(user_id.to_bytes(4, 'big')).hexdigest()
-    print(user_id)
-    print(hash)
+    hash = get_user_hash(user_id)
 
     client = await Client.select_by_user_id(user_id)
     if client is None:
@@ -32,6 +35,9 @@ async def handle_bot(request):
 
 
 async def handle_wialon(request):
+    hash = request.rel_url.query['hash']
+    client = Client.select_by_hash(hash)
+    print(client)
     return web.Response(status=200, text='WLN!!!')
 
 
@@ -40,7 +46,7 @@ if __name__ == '__main__':
     DBManager().set_settings(config.db)
     app = web.Application()
     app.add_routes([
-        web.get('/index', handle_wialon),
+        web.get('/notify', handle_wialon),
         web.post('/index', handle_bot)
     ])
     app.on_shutdown.append(DBManager().on_shutdown)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BIGINT, String, insert
+from sqlalchemy import Column, Integer, BIGINT, String, insert, select
 from modules.dbmanager import DBManager
 from .baseModels import Base, BaseModel
 
@@ -21,3 +21,8 @@ class Client(Base, BaseModel):
     @staticmethod
     async def create_client(user_id, hash):
         return await Client.add_client(user_id=user_id, hash=hash)
+
+    @classmethod
+    async def select_by_hash(cls, hash):
+        query = select([cls]).where(cls.hash == hash)
+        return await DBManager().query_fetchrow(query)
