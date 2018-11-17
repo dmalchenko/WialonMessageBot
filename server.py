@@ -18,12 +18,15 @@ async def handle_bot(request):
         return web.Response(status=200)
 
     user_id = int(data['message']['chat']['id'])
+    hash =  hashlib.md5(user_id.to_bytes(4, 'big')).hexdigest()
+    print(user_id)
+    print(hash)
 
     client = await Client.select_by_user_id(user_id)
     if client is None:
-        await Client.create_client(user_id)
+        await Client.create_client(user_id, hash)
 
-    client_url = config.callback_url % hashlib.md5(user_id).hexdigest()
+    client_url = config.callback_url % hash
     bot.send_message(user_id, client_url)
     return web.Response(status=200)
 

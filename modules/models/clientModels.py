@@ -1,4 +1,3 @@
-import hashlib
 from sqlalchemy import Column, Integer, BIGINT, String, insert
 from modules.dbmanager import DBManager
 from .baseModels import Base, BaseModel
@@ -14,11 +13,11 @@ class Client(Base, BaseModel):
     cnt = Column(Integer, default=0)
 
     @classmethod
-    async def add_client(cls, user_id):
+    async def add_client(cls, user_id, hash):
         query = insert(cls)
-        ins = query.values(user_id=user_id, cnt=0, hash=hashlib.md5(user_id).hexdigest())
+        ins = query.values(user_id=user_id, cnt=0, hash=hash)
         return await DBManager().query_execute(ins)
 
     @staticmethod
-    async def create_client(user_id):
-        return await Client.add_client(user_id=user_id)
+    async def create_client(user_id, hash):
+        return await Client.add_client(user_id=user_id, hash=hash)
