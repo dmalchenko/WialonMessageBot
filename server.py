@@ -35,10 +35,11 @@ async def handle_bot(request):
 
 
 async def handle_wialon(request):
-    if request.rel_url.query['hash'] is None:
+    try:
+        hash = request.rel_url.query['hash']
+    except KeyError:
         return web.Response(status=404, text='Client not found')
 
-    hash = request.rel_url.query['hash']
     client = await Client.select_by_hash(hash)
 
     if client is None:
